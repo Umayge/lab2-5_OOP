@@ -30,7 +30,7 @@ public class GUI extends JFrame{
     Object headers[];
     Object data[][];
 
-    MyException exept = new MyException();
+    FilterException exept = new FilterException();
     //кнопки на панели
     private JButton save;
     private JButton open;
@@ -165,13 +165,13 @@ public class GUI extends JFrame{
         scrolltext = new JScrollPane(textArea);
 
         //Подготовка компонентов поиска
-        domain = new JComboBox(new String[]{"ФИО","Паспорт","Водительские права","Марка машины","Гос номер", "Дата последенго тех осмотра"});
+        domain = new JComboBox(new String[]{"...","ФИО","Паспорт","Водительские права","Марка машины","Гос номер", "Дата последенго тех осмотра"});
         field = new JTextField();
         fieldButton = new JButton("Поиск");
         searchLabel = new JLabel("Поиск по:");
 
         //Подготовка компонентов сортировки
-        sorting = new JComboBox(new String[]{"ФИО","Марка машины","Гос номер", "Дата последенго тех осмотра"});
+        sorting = new JComboBox(new String[]{"...","ФИО","Марка машины","Гос номер", "Дата последенго тех осмотра"});
         up = new JButton(new ImageIcon("./ico/up.png"));
         down = new JButton(new ImageIcon("./ico/down.png"));
         up.setToolTipText("сортировать в поряде возрастания");
@@ -276,7 +276,7 @@ public class GUI extends JFrame{
         save.addActionListener(ihandler);
         open.addActionListener(ihandler);
 
-        //
+
         field.addMouseListener(Ms);
 
         ListSelectionModel selModel = tableBase.getSelectionModel();
@@ -293,6 +293,18 @@ public class GUI extends JFrame{
             throw new NullPointerException();
     }*/
 
+
+    private void Checkfilter(JTextField field, JComboBox domain) throws FilterException, DomainException
+    {
+        if(domain.getSelectedIndex() == 0)throw new DomainException();
+        if (field.getText().length() ==0 ) throw new FilterException();
+        if(field.getText().equals("Введите данные")) throw new FilterException();
+    }
+
+    private void CheckDomain(JComboBox domain) throws DomainException
+    {
+        if(domain.getSelectedIndex() == 0)throw new DomainException();
+    }
 
     public class Mouse implements MouseListener
     {
@@ -334,17 +346,43 @@ public class GUI extends JFrame{
             }
             if(e.getSource() == domain)
             {
-                JOptionPane.showMessageDialog (getContentPane(), domain.getSelectedItem());
-                field.setText("Введите данные");
+                try {
+                    CheckDomain(domain);
+                    JOptionPane.showMessageDialog(getContentPane(), domain.getSelectedItem());
+                    field.setText("Введите данные");
+                }
+                catch(NullPointerException ex){
+                    JOptionPane.showMessageDialog(getContentPane(),ex.toString());
+
+                }
+                catch (DomainException domex)
+                {
+                    JOptionPane.showMessageDialog(null,domex.getMessage());
+                }
+
             }
 
             if(e.getSource() == sorting)
             {
-                JOptionPane.showMessageDialog (getContentPane(), sorting.getSelectedItem());
+                try
+                {
+                    CheckDomain(sorting);
+                    JOptionPane.showMessageDialog(getContentPane(), sorting.getSelectedItem());
+                }
+                catch(NullPointerException ex)
+                {
+                    JOptionPane.showMessageDialog(getContentPane(),ex.toString());
+
+                }
+                catch (DomainException sortex)
+                {
+                    JOptionPane.showMessageDialog(null,sortex.getMessage());
+                }
             }
             if(e.getSource() == fieldButton)
             {
-                /*try{CheckName(field);
+                try{
+                    Checkfilter(field,domain);
                     JOptionPane.showMessageDialog (getContentPane(), "поиск:"+field.getText());
                 }
 
@@ -352,25 +390,55 @@ public class GUI extends JFrame{
                     JOptionPane.showMessageDialog(getContentPane(),ex.toString());
 
                     }
-                catch (MyException myex)
+                catch (FilterException myex)
                 {
                     JOptionPane.showMessageDialog(null,myex.getMessage());
                 }
+                catch (DomainException domex)
+                {
+                    JOptionPane.showMessageDialog(null,domex.getMessage());
+                }
                 finally {
 
-                }*/
-                JOptionPane.showMessageDialog (getContentPane(), "поиск:"+field.getText());
+                }
+                //JOptionPane.showMessageDialog (getContentPane(), "поиск:"+field.getText());
 
 
 
             }
             if(e.getSource() == up)
             {
-                JOptionPane.showMessageDialog (getContentPane(), "up");
+                try
+                {
+                    CheckDomain(sorting);
+                    JOptionPane.showMessageDialog (getContentPane(), "up");
+                }
+                catch(NullPointerException ex)
+                {
+                    JOptionPane.showMessageDialog(getContentPane(),ex.toString());
+
+                }
+                catch (DomainException sortex)
+                {
+                    JOptionPane.showMessageDialog(null,sortex.getMessage());
+                }
             }
             if(e.getSource() == down)
             {
-                JOptionPane.showMessageDialog (getContentPane(), "down");
+                try
+                {
+                    CheckDomain(sorting);
+                    JOptionPane.showMessageDialog (getContentPane(), "down");
+                }
+                catch(NullPointerException ex)
+                {
+                    JOptionPane.showMessageDialog(getContentPane(),ex.toString());
+
+                }
+                catch (DomainException sortex)
+                {
+                    JOptionPane.showMessageDialog(null,sortex.getMessage());
+                }
             }
         }
     }
@@ -408,8 +476,8 @@ public class GUI extends JFrame{
 
         }
     }
-}
 
+}
 
 
 /*
