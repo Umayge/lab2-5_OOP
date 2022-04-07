@@ -7,11 +7,13 @@ import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
+import java.io.*;
 import java.util.Properties;
 import javax.swing.JFrame;
 import org.jdatepicker.impl.JDatePanelImpl;
 import org.jdatepicker.impl.JDatePickerImpl;
 import org.jdatepicker.impl.UtilDateModel;
+import java.io.IOException.*;
 
 public class GUI extends JFrame{
 
@@ -89,10 +91,9 @@ public class GUI extends JFrame{
     {
         super("База данных ГИБДД");
 
-        setExtendedState(JFrame.MAXIMIZED_BOTH);
-        //listCars.setUndecorated(true);
-        //listCars.setVisible(true);
-        //listCars.setLocation(100, 100);
+        setExtendedState(getExtendedState() | JFrame.MAXIMIZED_BOTH);
+        //setUndecorated(true);
+        //setVisible(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         //подготовка меню
@@ -153,7 +154,7 @@ public class GUI extends JFrame{
 
         //создание таблици с данными
         headers = new Object[]{"ФИО","Паспор","Водительске права","Марка машины","Гос Номер", "Дата последнего тех осмотра"};
-        data = new Object[50][6];
+        data = new Object[0][0];
         model = new DefaultTableModel(data,headers);
         tableBase = new JTable(model);
         scrolltable = new JScrollPane(tableBase);
@@ -275,6 +276,7 @@ public class GUI extends JFrame{
         extMenuIt.addActionListener(ihandler);
         save.addActionListener(ihandler);
         open.addActionListener(ihandler);
+        add.addActionListener(ihandler);
 
 
         field.addMouseListener(Ms);
@@ -336,13 +338,63 @@ public class GUI extends JFrame{
 
         public void actionPerformed(ActionEvent e)
         {
+            if(e.getSource() == add)
+            {
+                model.addRow(new String[]{});
+            }
+
             if(e.getSource() == save)
             {
-                JOptionPane.showMessageDialog (getContentPane(), "save");
+                FileDialog save = new FileDialog(GUI.this,"Сохранение данных",FileDialog.SAVE);
+                save.setFile("*.txt");
+                save.setVisible(true);
+                String fileName = save.getDirectory()+save.getFile();
+                if(fileName==null)return;
+                try{
+                    BufferedWriter writer = new BufferedWriter(new FileWriter(fileName));
+                    for(int i=0;i<model.getRowCount();i++)
+                    {
+                        for(int j=0;j<model.getColumnCount();j++)
+                        {
+                            writer.write((String) model.getValueAt(i,j));
+                            writer.write("\n");
+                        }
+                    }
+                    writer.close();
+                } catch (IOException ioException) {
+                    ioException.printStackTrace();
+                }
+
             }
             if(e.getSource() == open)
             {
-                JOptionPane.showMessageDialog (getContentPane(), "open");
+                FileDialog open = new FileDialog(GUI.this,"Загрузка данных",FileDialog.LOAD);
+                open.setFile("*.txt");
+                open.setVisible(true);
+                String fileName = open.getDirectory()+open.getFile();
+                if(fileName==null)return;
+                try{
+                    BufferedReader reader = new BufferedReader(new FileReader(fileName));
+                    int rows = model.getRowCount();
+                    for(int i=0;i<rows;i++)model.removeRow(0);
+                    String name;
+                    do {
+                        name = reader.readLine();
+                        if(name!=null)
+                        {
+                            String pass = reader.readLine();
+                            String driver_license  = reader.readLine();
+                            String brand = reader.readLine();
+                            String number = reader.readLine();
+                            String date = reader.readLine();
+                            model.addRow(new String[]{name,pass,driver_license,brand,number,date});
+                        }
+                    }while(name!=null);
+                } catch (FileNotFoundException fileNotFoundException) {
+                    fileNotFoundException.printStackTrace();
+                } catch (IOException ioException) {
+                    ioException.printStackTrace();
+                }
             }
             if(e.getSource() == domain)
             {
@@ -388,7 +440,6 @@ public class GUI extends JFrame{
 
                 catch(NullPointerException ex){
                     JOptionPane.showMessageDialog(getContentPane(),ex.toString());
-
                     }
                 catch (FilterException myex)
                 {
@@ -398,9 +449,7 @@ public class GUI extends JFrame{
                 {
                     JOptionPane.showMessageDialog(null,domex.getMessage());
                 }
-                finally {
 
-                }
                 //JOptionPane.showMessageDialog (getContentPane(), "поиск:"+field.getText());
 
 
