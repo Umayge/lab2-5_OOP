@@ -11,6 +11,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 public class XmlOpen extends JFrame
@@ -23,7 +24,7 @@ public class XmlOpen extends JFrame
         openXML.setFile("*.xml");
         openXML.setVisible(true);
         fileNameOpen = openXML.getDirectory() + openXML.getFile();
-        if(fileNameOpen == null)return;
+        if(fileNameOpen.equals("nullnull"))return;
 
         tableModel = (DefaultTableModel) table.getModel();
         tableModel.setRowCount(0);
@@ -31,7 +32,7 @@ public class XmlOpen extends JFrame
         {
             Document doc = getDocument();
             doc.getDocumentElement().normalize();
-            NodeList nlMan = doc.getElementsByTagName("Mame");
+            NodeList nlMan = doc.getElementsByTagName("Man");
             for(int temp = 0; temp< nlMan.getLength(); temp++)
             {
                 Node elem = nlMan.item(temp);
@@ -42,7 +43,7 @@ public class XmlOpen extends JFrame
                 String mark = attrs.getNamedItem("Mark").getNodeValue();
                 String number =attrs.getNamedItem("Number").getNodeValue();
                 String date = attrs.getNamedItem("Date").getNodeValue();
-                tableModel.addRow(new String[]{pass,driver_license,mark, number, date});
+                tableModel.addRow(new String[]{name,pass,driver_license,mark, number, date});
 
             }
         }
@@ -61,9 +62,8 @@ public class XmlOpen extends JFrame
     private Document getDocument() throws Exception 
     {
         try {
-            DocumentBuilderFactory f = DocumentBuilderFactory.newInstance();
-            DocumentBuilder builder = f.newDocumentBuilder();
-            Document doc = builder.parse(new File(fileNameOpen));
+            DocumentBuilder f = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+            Document doc = f.parse( new File(fileNameOpen));
             return doc;
         } 
         catch (Exception exception)

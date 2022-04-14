@@ -6,11 +6,13 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.*;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.awt.*;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 
 
@@ -19,13 +21,14 @@ public class XmlSave extends JFrame
 {
     XmlSave(String str, DefaultTableModel tableModel) throws  Exception
     {
+        if(tableModel.getRowCount()==0)return;
         FileDialog saveXML = new FileDialog(this,str,FileDialog.SAVE);
         saveXML.setFile("*.xml");
         saveXML.setVisible(true);
         String fileNameSave  = saveXML.getDirectory() + saveXML.getFile();
         if(fileNameSave == null)return;
         Document doc = getDocument();
-        Node manlist =doc.createElement("Manlist");
+        Node manlist = doc.createElement("Manlist");
         doc.appendChild(manlist);
         for(int i = 0;i<tableModel.getRowCount();i++)
         {
@@ -41,9 +44,8 @@ public class XmlSave extends JFrame
         try
         {
             Transformer transformer = TransformerFactory.newInstance().newTransformer();
-            transformer.setOutputProperty(OutputKeys.METHOD,"xml");
-            transformer.setOutputProperty(OutputKeys.INDENT,"yes");
-            transformer.transform(new DOMSource(doc),new StreamResult(new FileOutputStream(fileNameSave)));
+           java.io.FileWriter fileWriter = new FileWriter(fileNameSave);
+            transformer.transform(new DOMSource(doc),new StreamResult(fileWriter));
         }
         catch (TransformerConfigurationException transformerConfigurationException)
         {
@@ -63,13 +65,13 @@ public class XmlSave extends JFrame
     {
         try
         {
-            DocumentBuilderFactory f = DocumentBuilderFactory.newInstance();
-            DocumentBuilder builder = f.newDocumentBuilder();
+            DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+
             return builder.newDocument();
         }
         catch (Exception exception)
         {
-            throw new Exception("XML parsing error!");
+            throw new Exception("XML Error");
         }
 
     }
