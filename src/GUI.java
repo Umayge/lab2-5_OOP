@@ -345,56 +345,22 @@ public class GUI extends JFrame{
 
             if(e.getSource() == save)
             {
-                FileDialog save = new FileDialog(GUI.this,"Сохранение данных",FileDialog.SAVE);
-                save.setFile("*.txt");
-                save.setVisible(true);
-                String fileName = save.getDirectory()+save.getFile();
-                if(fileName==null)return;
-                try{
-                    BufferedWriter writer = new BufferedWriter(new FileWriter(fileName));
-                    for(int i=0;i<model.getRowCount();i++)
-                    {
-                        for(int j=0;j<model.getColumnCount();j++)
-                        {
-                            writer.write((String) model.getValueAt(i,j));
-                            writer.write("\n");
-                        }
-                    }
-                    writer.close();
-                } catch (IOException ioException) {
-                    ioException.printStackTrace();
-                }
 
+                try {
+                    XmlSave xmlSave =new XmlSave("Сохранение данных", model);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
             }
             if(e.getSource() == open)
             {
-                FileDialog open = new FileDialog(GUI.this,"Загрузка данных",FileDialog.LOAD);
-                open.setFile("*.txt");
-                open.setVisible(true);
-                String fileName = open.getDirectory()+open.getFile();
-                if(fileName==null)return;
-                try{
-                    BufferedReader reader = new BufferedReader(new FileReader(fileName));
-                    int rows = model.getRowCount();
-                    for(int i=0;i<rows;i++)model.removeRow(0);
-                    String name;
-                    do {
-                        name = reader.readLine();
-                        if(name!=null)
-                        {
-                            String pass = reader.readLine();
-                            String driver_license  = reader.readLine();
-                            String brand = reader.readLine();
-                            String number = reader.readLine();
-                            String date = reader.readLine();
-                            model.addRow(new String[]{name,pass,driver_license,brand,number,date});
-                        }
-                    }while(name!=null);
-                } catch (FileNotFoundException fileNotFoundException) {
-                    fileNotFoundException.printStackTrace();
-                } catch (IOException ioException) {
-                    ioException.printStackTrace();
+
+                try {
+                    XmlOpen xmlOpen = new XmlOpen("Загрузка данных",model,tableBase);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
                 }
+
             }
             if(e.getSource() == domain)
             {
