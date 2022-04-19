@@ -1,23 +1,32 @@
 import com.itextpdf.text.*;
+import com.itextpdf.text.Font;
 import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 
+import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import java.awt.*;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-public class pdfSave {
+public class pdfSave extends JFrame {
 
-    pdfSave(DefaultTableModel tableModel)
+    pdfSave(String str,DefaultTableModel tableModel) throws Exception
     {
-        Document document = new Document(PageSize.A4,50,50,50,50);
+        if(tableModel.getRowCount()==0)return;
+        FileDialog savePDF = new FileDialog(this,str,FileDialog.SAVE);
+        savePDF.setFile("*.pdf");
+        savePDF.setVisible(true);
+        String fileNameSave  = savePDF.getDirectory() + savePDF.getFile();
+        if(fileNameSave == null)return;
+        Document document = new Document(PageSize.A4,-40,-40,50,50);
         PdfPTable table =new PdfPTable(6);
         try
         {
-            PdfWriter writer = PdfWriter.getInstance((com.itextpdf.text.Document) document,new FileOutputStream("../pdfdata.pdf"));
+            PdfWriter writer = PdfWriter.getInstance((Document) document,new FileOutputStream(fileNameSave));
         } catch (DocumentException e) {
             e.printStackTrace();
         } catch (FileNotFoundException e) {
@@ -26,7 +35,7 @@ public class pdfSave {
         BaseFont baseFont = null;
         try
         {
-            baseFont = BaseFont.createFont("../PT-Astra-Serif-Regular.ottt/PT/PT/PT-Astra-Serif/PT-Astra-Serif_Regular.ttf",BaseFont.IDENTITY_H,BaseFont.EMBEDDED);
+            baseFont = BaseFont.createFont("./PT-Astra-Serif_Regular.ttf",BaseFont.IDENTITY_H,BaseFont.EMBEDDED);
         } catch (DocumentException e) {
             e.printStackTrace();
         } catch (IOException e) {
