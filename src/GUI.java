@@ -7,13 +7,11 @@ import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
-import java.io.*;
 import java.util.Properties;
 import javax.swing.JFrame;
 import org.jdatepicker.impl.JDatePanelImpl;
 import org.jdatepicker.impl.JDatePickerImpl;
 import org.jdatepicker.impl.UtilDateModel;
-import java.io.IOException.*;
 
 public class GUI extends JFrame{
 
@@ -67,8 +65,8 @@ public class GUI extends JFrame{
 
     // Объявляем меню файл
     JMenuBar menuBar;
-    JMenu fileMenu;
-    JMenuItem saveMenuIt,openMenuIt,newMenuIt,extMenuIt;
+    JMenu reportMenu;
+    JMenuItem htmlReportTable, pdfReportTable,newMenuIt,extMenuIt;
 
     //обработка событий
     iHandler ihandler = new iHandler();
@@ -98,9 +96,9 @@ public class GUI extends JFrame{
 
         //подготовка меню
         menuBar = new JMenuBar();
-        fileMenu = new JMenu("Файл");
-        openMenuIt = new JMenuItem("Открыть");
-        saveMenuIt = new JMenuItem("Сохранить");
+        reportMenu = new JMenu("Отчеты");
+        pdfReportTable = new JMenuItem("Сохранить таблицу в pdf");
+        htmlReportTable = new JMenuItem("Сохранить таблицу в html");
         newMenuIt = new JMenuItem("Новое");
         extMenuIt = new JMenuItem("Выйти");
 
@@ -128,14 +126,14 @@ public class GUI extends JFrame{
         del.setPreferredSize(new Dimension(32,32));
 
         // Создаём меню
-        fileMenu.add(newMenuIt);
-        fileMenu.add(openMenuIt);
-        fileMenu.add(saveMenuIt);
-        fileMenu.addSeparator();
-        fileMenu.add(extMenuIt);
+        reportMenu.add(newMenuIt);
+        reportMenu.add(pdfReportTable);
+        reportMenu.add(htmlReportTable);
+        reportMenu.addSeparator();
+        reportMenu.add(extMenuIt);
 
         //Загружаем меню
-        menuBar.add(fileMenu);
+        menuBar.add(reportMenu);
         menuBar.add(Box.createHorizontalGlue());
         setJMenuBar(menuBar);
 
@@ -277,8 +275,9 @@ public class GUI extends JFrame{
         save.addActionListener(ihandler);
         open.addActionListener(ihandler);
         add.addActionListener(ihandler);
-
-
+        edit.addActionListener(ihandler);
+        pdfReportTable.addActionListener(ihandler);
+        htmlReportTable.addActionListener(ihandler);
         field.addMouseListener(Ms);
 
         ListSelectionModel selModel = tableBase.getSelectionModel();
@@ -338,6 +337,24 @@ public class GUI extends JFrame{
 
         public void actionPerformed(ActionEvent e)
         {
+            if (e.getSource() == htmlReportTable)
+            {
+                try
+                {
+                    htmlSave htmlSave = new htmlSave("Сохранение таблици В HTML",model);
+                } catch (Exception exception) {
+                    exception.printStackTrace();
+                }
+            }
+            if(e.getSource() == pdfReportTable)
+            {
+                try {
+                    pdfSave pdfSave = new pdfSave("Сохранение таблици В PDF",model);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+
             if(e.getSource() == add)
             {
                 model.addRow(new String[]{});
@@ -362,6 +379,10 @@ public class GUI extends JFrame{
                 }
 
             }
+            if(e.getSource()==edit)
+            {
+
+            }
             if(e.getSource() == domain)
             {
                 try {
@@ -373,9 +394,9 @@ public class GUI extends JFrame{
                     JOptionPane.showMessageDialog(getContentPane(),ex.toString());
 
                 }
-                catch (DomainException domex)
+                catch (DomainException domainException)
                 {
-                    JOptionPane.showMessageDialog(null,domex.getMessage());
+                    JOptionPane.showMessageDialog(null,domainException.getMessage());
                 }
 
             }
@@ -392,9 +413,9 @@ public class GUI extends JFrame{
                     JOptionPane.showMessageDialog(getContentPane(),ex.toString());
 
                 }
-                catch (DomainException sortex)
+                catch (DomainException domainException)
                 {
-                    JOptionPane.showMessageDialog(null,sortex.getMessage());
+                    JOptionPane.showMessageDialog(null,domainException.getMessage());
                 }
             }
             if(e.getSource() == fieldButton)
@@ -407,13 +428,13 @@ public class GUI extends JFrame{
                 catch(NullPointerException ex){
                     JOptionPane.showMessageDialog(getContentPane(),ex.toString());
                     }
-                catch (FilterException myex)
+                catch (FilterException filterException)
                 {
-                    JOptionPane.showMessageDialog(null,myex.getMessage());
+                    JOptionPane.showMessageDialog(null,filterException.getMessage());
                 }
-                catch (DomainException domex)
+                catch (DomainException domainException)
                 {
-                    JOptionPane.showMessageDialog(null,domex.getMessage());
+                    JOptionPane.showMessageDialog(null,domainException.getMessage());
                 }
 
                 //JOptionPane.showMessageDialog (getContentPane(), "поиск:"+field.getText());
