@@ -382,6 +382,15 @@ public class GUI extends JFrame{
             if(e.getSource()==edit)
             {
 
+                Tthread tthread1 = new Tthread(1,model,tableBase);
+                Tthread tthread2 = new Tthread(2,model);
+                Tthread tthread3 = new Tthread(3,model);
+                Tthread tthread4 = new Tthread(4,model);
+                tthread1.run();
+                tthread2.run();
+                tthread3.run();
+                tthread4.run();
+
             }
             if(e.getSource() == domain)
             {
