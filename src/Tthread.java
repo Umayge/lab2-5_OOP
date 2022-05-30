@@ -39,7 +39,7 @@ public class Tthread extends Thread
             synchronized (shared)
             {
 
-                model.addRow(new String[]{"sfgb","aewrhaer","awhra","wt","waghaq","w3e5u"});
+                model.addRow(new String[]{"Малинова Евгения Денисовна","4072 407901","4011 539037","Tesla","С 791 Н С","2022-04-3"});
                 shared.notifyAll();
             }
         }

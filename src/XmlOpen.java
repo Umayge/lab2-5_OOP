@@ -59,7 +59,7 @@ public class XmlOpen extends JFrame
 
 
 
-    private Document getDocument() throws Exception 
+    public static Document getDocument() throws Exception
     {
         try {
             DocumentBuilder f = DocumentBuilderFactory.newInstance().newDocumentBuilder();
