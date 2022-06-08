@@ -9,13 +9,14 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import java.util.Properties;
+
 import javax.swing.JFrame;
 import org.jdatepicker.impl.JDatePanelImpl;
 import org.jdatepicker.impl.JDatePickerImpl;
 import org.jdatepicker.impl.UtilDateModel;
-
+import org.apache.log4j.Logger;
 public class GUI extends JFrame{
-
+    private static final Logger logGUI = Logger.getLogger(String.valueOf(GUI.class));
     //календарь
     UtilDateModel model1 = new UtilDateModel();
     UtilDateModel model2 = new UtilDateModel();
@@ -89,7 +90,7 @@ public class GUI extends JFrame{
     public GUI()
     {
         super("База данных ГИБДД");
-
+        logGUI.info("Start app");
         setExtendedState(getExtendedState() | JFrame.MAXIMIZED_BOTH);
         //setUndecorated(true);
         //setVisible(true);
@@ -283,6 +284,7 @@ public class GUI extends JFrame{
 
         ListSelectionModel selModel = tableBase.getSelectionModel();
         selModel.addListSelectionListener(Ls);
+        logGUI.info("Finish app");
     }
 
 
@@ -317,6 +319,8 @@ public class GUI extends JFrame{
             if(field.getText().contains("Введите данные"))
             {
                 field.setText("");
+                logGUI.warn("search_field != Введите данные");
+                logGUI.debug("Перезагрузите компьютер");
             }
         }
 
@@ -438,13 +442,9 @@ public class GUI extends JFrame{
                 catch(NullPointerException ex){
                     JOptionPane.showMessageDialog(getContentPane(),ex.toString());
                     }
-                catch (FilterException filterException)
+                catch (FilterException | DomainException filterException)
                 {
                     JOptionPane.showMessageDialog(null,filterException.getMessage());
-                }
-                catch (DomainException domainException)
-                {
-                    JOptionPane.showMessageDialog(null,domainException.getMessage());
                 }
 
                 //JOptionPane.showMessageDialog (getContentPane(), "поиск:"+field.getText());

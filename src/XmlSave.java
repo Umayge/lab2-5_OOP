@@ -26,7 +26,7 @@ public class XmlSave extends JFrame
         saveXML.setFile("*.xml");
         saveXML.setVisible(true);
         String fileNameSave  = saveXML.getDirectory() + saveXML.getFile();
-        if(fileNameSave == null)return;
+        //String fileNameSave  ="source.xml";
         Document doc = getDocument();
         Node manlist = doc.createElement("Manlist");
         doc.appendChild(manlist);
